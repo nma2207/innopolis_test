@@ -62,6 +62,7 @@ bool Server::run()
                 break;
 
             std::string bufStr = buf;
+            std::cout << bufStr << std::endl;
 
             std::regex rgx("[^\\d]+");
             
@@ -81,8 +82,10 @@ bool Server::run()
                 ss << std::to_string(num) + " ";
             std::string sum = std::to_string(std::accumulate(numbers.begin(), numbers.end(), 0));
 
+            std::cout <<ss.str() << " " << sum << std::endl;
             send(sock, ss.str().c_str(), ss.str().size() + 1, 0);
             send(sock, sum.c_str(), sum.size() + 1, 0);
+
         }
     }
 }

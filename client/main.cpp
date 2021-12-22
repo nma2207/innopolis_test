@@ -4,15 +4,18 @@
 #include <netinet/in.h>
 #include <iostream>
 #include <arpa/inet.h>
+#include <cstring>
 
-char message[] = "20 bananas, 15 apples 5peaches and 10 oranges\n";
-char buf[sizeof(message)];
+//char* message = "20 bananas, 15 apples 5peaches and 10 oranges\n";
+char buf[1024];
 
-int main()
+int main(int n, char** args)
 {
+
+
     int sock;
     struct sockaddr_in addr;
-
+    char* message = args[1];
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if(sock < 0)
     {
@@ -29,11 +32,12 @@ int main()
         return 2;
     }
 
-    send(sock, message, sizeof(message), 0);
-    recv(sock, buf, sizeof(message), 0);
+    std::cout << message << std::endl;
+    send(sock, message, strlen(message) + 1, 0);
+    recv(sock, buf, 1024, 0);
     
     std::cout << buf << std::endl;
-    recv(sock, buf, sizeof(message), 0);
+    recv(sock, buf, 1024, 0);
     
     std::cout << buf << std::endl;
 

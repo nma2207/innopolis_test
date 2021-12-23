@@ -11,7 +11,8 @@ int main(int n, char** args)
         return 0;
     }
 
-    Client::Type type = std::string{args[1]} == "TCP" ? Client::TCP : Client::UDP;
+    Client::Type type = std::string{args[1]} == "TCP" ? Client::TCP : Client::UDP;\
+    std::cout << type << std::endl;
     std::string serverIp = args[2];
     int port = std::stoi(args[3]);
 

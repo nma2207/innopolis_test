@@ -61,35 +61,21 @@ bool Server::run()
             if (bytes_read <= 0)
                 break;
 
-            std::string bufStr = buf;
-            std::cout << bufStr << std::endl;
+            std::cout << buf << std::endl;
 
-            std::regex rgx("[^\\d]+");
+            auto res = _processor->process(buf);
             
-            std::sregex_token_iterator iter(bufStr.begin(),
-                                            bufStr.end(),
-                                            rgx,
-                                            -1);
-            std::sregex_token_iterator end;
-
-            std::vector<int> numbers;
-            for (; iter != end; ++iter)
-                numbers.push_back(std::stoi(*iter));
-            
-            std::sort(numbers.begin(), numbers.end());
-            std::stringstream ss;
-            for(int num: numbers)
-                ss << std::to_string(num) + " ";
-            std::string sum = std::to_string(std::accumulate(numbers.begin(), numbers.end(), 0));
-
-            std::cout <<ss.str() << " " << sum << std::endl;
-            send(sock, ss.str().c_str(), ss.str().size() + 1, 0);
-            send(sock, sum.c_str(), sum.size() + 1, 0);
-
+            std::cout << res.first << " " << res.second << std::endl;
+            send(sock, res.first.c_str(), res.first.size() + 1, 0);
+            send(sock, res.second.c_str(), res.second.size() + 1, 0);
         }
     }
 }
 
+void Server::setProcessor(std::unique_ptr<StringProcessor> processor)
+{
+    _processor = std::move(processor);
+}
 Server::~Server()
 {
 }

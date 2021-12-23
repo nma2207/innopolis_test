@@ -2,20 +2,32 @@
 #include <regex>
 
 #include <server.h>
+#include "numbersprocessor.h"
 
-int main(int, char **)
+int main(int n, char** args)
 {
-    // std::regex rgx("[^\\d]+");
-    // std::string string_to_split = "2    0   ";
-    // std::sregex_token_iterator iter(string_to_split.begin(),
-    //                                 string_to_split.end(),
-    //                                 rgx,
-    //                                 -1);
-    // std::sregex_token_iterator end;
-    // for (; iter != end; ++iter)
-    //     std::cout << *iter << '\n';
-    Server server{Server::TCP};
-    server.start(8080);
-    server.run();
+
+    if (n != 3)
+    {
+        std::cout << "we need 4 arguments: TCP/UDP, ip address and port of server" << std::endl;
+        return 0;
+    }
+
+    Server::Type type = std::string{args[1]} == "TCP" ? Server::TCP : Server::UDP;
+    int port = std::stoi(args[2]);
+    
+    Server server{type};
+    if (!server.start(port))
+    {
+        std::cout << "Server cannot start" << std::endl;
+        return 1;
+    }
+
+    server.setProcessor(std::make_unique<NumbersProcessor>());
+    if (!server.run())
+    {
+        std::cout << "Server failed" << std::endl;
+        return 1;
+    }
  //   server.close();
 }

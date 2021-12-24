@@ -16,9 +16,17 @@ string
 utility
 -
 
-/home/marat/projects/test_task/server/test/main.cpp
-gtest/gtest.h
--
+/home/marat/projects/test_task/server/src/numbersprocessor.cpp
 numbersprocessor.h
-/home/marat/projects/test_task/server/test/numbersprocessor.h
+/home/marat/projects/test_task/server/src/numbersprocessor.h
+cctype
+-
+iostream
+-
+numeric
+-
+regex
+-
+vector
+-
 

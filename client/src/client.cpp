@@ -1,27 +1,16 @@
 #include "client.h"
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 
 #include <cstdio>
 #include <iostream>
+#include <unistd.h>
 
-Client::Client(Type type)
-{
-    switch (type)
-    {
-    case UDP:
-        _socket = socket(AF_INET, SOCK_STREAM, IPPROTO_UDP);
-        break;
-    case TCP:
-        _socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-        break;
-    }
-}
 
-bool Client::connectTo(const std::string& serverIp, int serverPort)
+bool Client::setServer(const std::string &serverIp, int serverPort)
 {
     if (_socket < 0)
     {
@@ -29,14 +18,13 @@ bool Client::connectTo(const std::string& serverIp, int serverPort)
         return false;
     }
 
-    sockaddr_in addr;
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(serverPort);
-    inet_aton(serverIp.c_str(), &addr.sin_addr);
+    _serverAddr.sin_family = AF_INET;
+    _serverAddr.sin_port = htons(serverPort);
+    inet_aton(serverIp.c_str(), &_serverAddr.sin_addr);
 
-    if (connect(_socket, (sockaddr*)&addr, sizeof(addr)) < 0)
+    if (!this->connect())
     {
-        std::cerr << "Cannot connect to " << serverIp <<":"<<serverPort << std::endl;
+        std::cerr << "Cannot connect to " << serverIp << ":" << serverPort << std::endl;
 
         return false;
     }
@@ -45,22 +33,37 @@ bool Client::connectTo(const std::string& serverIp, int serverPort)
 
 bool Client::close()
 {
-    return true;
+    return ::close(_socket) == 0;
 }
 
-std::pair<std::string, std::string> Client::send(const std::string& message)
+std::pair<std::string, std::string> Client::send(const std::string &message)
 {
     size_t messageSize = message.size() + 1;
-    ::send(_socket, message.c_str(), messageSize, 0);
-    char *buf = new char[messageSize];
-    recv(_socket, buf, messageSize, 0);
+    if (!sendMessage(message))
+    {
+        std::cerr << "Send message error" << std::endl;
+        return {};
+    }
+    //int code = ::send(_socket, message.c_str(), messageSize, 0);
+    //std::cout << code << std::endl;
+    
+    std::string response;
+    if (!waitForMessage(response, messageSize))
+    {
+        std::cerr << "Recv error" << std::endl;
+        return {};
+    }
+    
     std::pair<std::string, std::string> result;
-    result.first = buf;
+    //std::cout << buf <<std::endl;
+    result.first = response;
 
-    recv(_socket, buf, messageSize, 0);
-    result.second = buf;
-
-    delete[] buf;
+    if (!waitForMessage(response, messageSize))
+    {
+        std::cerr << "Recv error" << std::endl;
+        return {};
+    }
+    result.second = response;
 
     return result;
 }

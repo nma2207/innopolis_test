@@ -3,7 +3,10 @@ project(client VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(client main.cpp src/client.cpp)
+add_executable(client main.cpp
+    src/client.cpp
+    src/tcp_client.cpp
+    src/udp_client.cpp)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

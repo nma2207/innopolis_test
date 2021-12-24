@@ -32,7 +32,6 @@ TEST(ServerTest, OneNumberTest)
   EXPECT_EQ(res.first, "2");
   EXPECT_EQ(res.second, "2");
 
-
   res = processor.process("banana 3");
   EXPECT_EQ(res.first, "3");
   EXPECT_EQ(res.second, "3");

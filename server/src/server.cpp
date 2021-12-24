@@ -1,34 +1,30 @@
 #include "server.h"
 
-#include <sys/socket.h>
-#include <sys/types.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 
 #include <iostream>
-#include <regex>
 #include <numeric>
+#include <regex>
+#include <unistd.h>
 
 const int Server::BUFFER_SIZE = 1024;
 
-Server::Server(Server::Type type)
-{
-    switch (type)
-    {
-    case TCP:
-        _listener = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-        break;
-    case UDP:
-        _listener = socket(AF_INET, SOCK_STREAM, IPPROTO_UDP);
-        break;
-    }
-}
-
-bool Server::start(int port)
+/**
+ * @brief Привязывается к порту
+ * 
+ * @param port номер порта
+ * @return true если все хорошо
+ * @return false если не получилось подключиться
+ */
+bool Server::connectTo(int port)
 {
     if (_listener < 0)
     {
-        return false;
+        std::cerr << "Socket is not open" << std::endl;
+        return false; 
     }
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
@@ -36,38 +32,65 @@ bool Server::start(int port)
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     if (bind(_listener, (sockaddr *)&addr, sizeof(addr)) < 0)
     {
-        std::cerr << "err";
+        std::cerr << "Cannot bind to port:" << port << std::endl;
         return false;
     }
-
-    listen(_listener, 5);
+    if (!listenToClient())
+    {
+        std::cerr << "Cannot listen" << std::endl;
+        return false; 
+    }
     std::cout << "Start listen port " << port << std::endl;
     return true;
 }
 
+/**
+ * @brief Закрывает сокет
+ * 
+ * @return true если все закрылось хорошо
+ * @return false если все закрылось нехорошо
+ */
+bool Server::close()
+{
+    return ::close(_listener) == 0;
+}
+
+/**
+ * @brief обработка сообщений от клиента
+ * 
+ * @return true 
+ * @return false 
+ */
 bool Server::run()
 {
     while (1)
     {
-        int sock = accept(_listener, nullptr, nullptr);
-        if (sock < 0)
+        if (!acceptClient())
         {
+            std::cerr << "Cannot accpet client" << std::endl;
             return false;
         }
         while (1)
         {
-            char buf[Server::BUFFER_SIZE];
-            int bytes_read = recv(sock, buf, 1024, 0);
-            if (bytes_read <= 0)
+            std::string message;
+            waitForMessage(message);
+
+            std::cout << message << std::endl;
+
+
+            if (message == "disconnect")
+            {
+                sendMessage("Bye");
+                sendMessage("Bye");
                 break;
+            }
 
-            std::cout << buf << std::endl;
+            auto res = _processor->process(message);
 
-            auto res = _processor->process(buf);
-            
             std::cout << res.first << " " << res.second << std::endl;
-            send(sock, res.first.c_str(), res.first.size() + 1, 0);
-            send(sock, res.second.c_str(), res.second.size() + 1, 0);
+            
+            sendMessage(res.first);
+            sendMessage(res.second);
         }
     }
 }
@@ -75,7 +98,4 @@ bool Server::run()
 void Server::setProcessor(std::unique_ptr<StringProcessor> processor)
 {
     _processor = std::move(processor);
-}
-Server::~Server()
-{
 }

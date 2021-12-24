@@ -1,12 +1,14 @@
 #include "numbersprocessor.h"
 
+#include <cctype>
 #include <iostream>
 #include <numeric>
 #include <regex>
 #include <vector>
-#include <cctype>
 
-std::pair<std::string, std::string> NumbersProcessor::process(const std::string &message)
+namespace {
+
+void extractNumbers(const std::string& message, std::vector<int>& numbers)
 {
     std::regex rgx("[^\\d]+");
 
@@ -16,18 +18,33 @@ std::pair<std::string, std::string> NumbersProcessor::process(const std::string 
                                     -1);
     std::sregex_token_iterator end;
 
-    std::vector<int> numbers;
     for (; iter != end; ++iter)
     {
         std::string numStr = *iter;
         if (numStr.size() > 0)
             numbers.push_back(std::stoi(numStr));
     }
-    
+}
+
+} // namespace
+
+/**
+ * @brief Обрабатывает строку от клиента
+ * 
+ * @param message то что прислал клиент
+ * @return std::pair<std::string, std::string> first - отсортированные числа, second - их сумма.
+ *  при отсутствии чисел возвращается пара {"-1", "-1"} 
+ */
+std::pair<std::string, std::string> NumbersProcessor::process(const std::string &message)
+{
+    std::vector<int> numbers;
+    extractNumbers(message, numbers);
+
     if (numbers.size() == 0)
         return {"-1", "-1"};
     
     std::sort(numbers.begin(), numbers.end());
+    
     std::stringstream ss;
     for(auto it = numbers.cbegin(); it != numbers.cend(); it++)
     {

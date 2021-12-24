@@ -3,11 +3,10 @@ project(server VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(CTest)
-enable_testing()
-
 add_executable(server main.cpp
     src/server.cpp
+    src/tcp_server.cpp
+    src/udp_server.cpp
     src/numbersprocessor.cpp)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

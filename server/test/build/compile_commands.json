@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/marat/projects/test_task/server/test/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9   -I/home/marat/projects/test_task/server/test/../include  -g   -o CMakeFiles/test_server.dir/main.cpp.o -c /home/marat/projects/test_task/server/test/main.cpp",
+  "file": "/home/marat/projects/test_task/server/test/main.cpp"
+},
+{
+  "directory": "/home/marat/projects/test_task/server/test/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9   -I/home/marat/projects/test_task/server/test/../include  -g   -o CMakeFiles/test_server.dir/home/marat/projects/test_task/server/src/numbersprocessor.cpp.o -c /home/marat/projects/test_task/server/src/numbersprocessor.cpp",
+  "file": "/home/marat/projects/test_task/server/src/numbersprocessor.cpp"
+}
+]

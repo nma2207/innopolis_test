@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../../include/numbersprocessor.h
+stringprocessor.h
+../../include/stringprocessor.h
+
+../../include/stringprocessor.h
+string
+-
+utility
+-
+
+/home/marat/projects/test_task/server/test/main.cpp
+gtest/gtest.h
+-
+numbersprocessor.h
+/home/marat/projects/test_task/server/test/numbersprocessor.h
+

@@ -8,6 +8,10 @@
 #include <string>
 #include <utility>
 
+/**
+ * @brief Абстрактый класс
+ * 
+ */
 class Client
 {
 public:

@@ -5,19 +5,13 @@
 #include "stringprocessor.h"
 
 /**
- * @brief Сервер
+ * @brief Абстрактный класс Сервер
  * 
  */
 class Server
 {
 public:
-    // enum Type
-    // {
-    //     UDP,
-    //     TCP
-    // };
 
-    // Server(Type type);
     bool connectTo(int port);
     bool close();
     bool run();    

@@ -2,6 +2,10 @@
 
 #include "server.h"
 
+/**
+ * @brief TCP-сервер
+ * 
+ */
 class TcpServer : public Server
 {
 public:

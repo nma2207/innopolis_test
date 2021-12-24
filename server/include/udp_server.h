@@ -5,6 +5,11 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
+/**
+ * @brief UDP-сервер
+ * 
+ */
 class UdpServer : public Server
 {
 public:
@@ -18,6 +23,6 @@ protected:
     
 
 private:
-    sockaddr _clientAddres;
+    sockaddr_in _clientAddres;
     socklen_t _clientLen;
 };

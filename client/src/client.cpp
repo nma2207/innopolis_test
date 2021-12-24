@@ -9,7 +9,14 @@
 #include <iostream>
 #include <unistd.h>
 
-
+/**
+ * @brief Устанавливает параметры сервера
+ * 
+ * @param serverIp IP-аддрес
+ * @param serverPort порт
+ * @return true если законнектился
+ * @return false не законнектился
+ */
 bool Client::setServer(const std::string &serverIp, int serverPort)
 {
     if (_socket < 0)
@@ -31,11 +38,20 @@ bool Client::setServer(const std::string &serverIp, int serverPort)
     return true;
 }
 
+/**
+ * @brief Закрывает сокет
+ */
 bool Client::close()
 {
     return ::close(_socket) == 0;
 }
 
+/**
+ * @brief Отправка сообщения на сервер, ждет в ответ 2 сообщения
+ * 
+ * @param message сообщение
+ * @return std::pair<std::string, std::string> результат работы (отсортированный массив и сумма)
+ */
 std::pair<std::string, std::string> Client::send(const std::string &message)
 {
     size_t messageSize = message.size() + 1;
@@ -44,9 +60,8 @@ std::pair<std::string, std::string> Client::send(const std::string &message)
         std::cerr << "Send message error" << std::endl;
         return {};
     }
-    //int code = ::send(_socket, message.c_str(), messageSize, 0);
-    //std::cout << code << std::endl;
     
+    std::cout << "wait for mess" << std::endl;
     std::string response;
     if (!waitForMessage(response, messageSize))
     {
@@ -55,7 +70,6 @@ std::pair<std::string, std::string> Client::send(const std::string &message)
     }
     
     std::pair<std::string, std::string> result;
-    //std::cout << buf <<std::endl;
     result.first = response;
 
     if (!waitForMessage(response, messageSize))

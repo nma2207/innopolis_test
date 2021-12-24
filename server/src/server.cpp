@@ -95,6 +95,11 @@ bool Server::run()
     }
 }
 
+/**
+ * @brief Устанавливает нужный обработчик сообщений
+ * 
+ * @param processor обработчик 
+ */
 void Server::setProcessor(std::unique_ptr<StringProcessor> processor)
 {
     _processor = std::move(processor);

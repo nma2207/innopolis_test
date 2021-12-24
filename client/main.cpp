@@ -8,6 +8,12 @@
 //char* message = "20 bananas, 15 apples 5peaches and 10 oranges\n";
 //char buf[1024];
 
+/**
+ * @brief метод-фабрика для создания клиента с нужным типом
+ * 
+ * @param type Тип
+ * @return std::unique_ptr<Client> 
+ */
 std::unique_ptr<Client> clientFactory(const std::string& type)
 {
     if (type == "TCP")
@@ -15,6 +21,7 @@ std::unique_ptr<Client> clientFactory(const std::string& type)
     else
         return std::make_unique<UdpClient>();
 }
+
 int main(int n, char** args)
 {
     if (n != 4)
@@ -32,7 +39,7 @@ int main(int n, char** args)
         std::cout << "cannot connect" << std::endl;
         return 0;
     }
-    std::cout << "COnnected to " << serverIp << ":" << port <<std::endl;
+    std::cout << "Connected to " << serverIp << ":" << port <<std::endl;
     std::cout <<"Write your message:" << std::endl;
 
     while (1)
@@ -41,6 +48,7 @@ int main(int n, char** args)
         std::string message;
         std::getline(std::cin, message);
 
+        // если пишем quit, то выходим и отсоединяемся от сервера
         if (message == "quit")
         {
             client->send("disconnect");

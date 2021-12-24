@@ -2,6 +2,10 @@
 
 #include "client.h"
 
+/**
+ * @brief TCP-клиент
+ * 
+ */
 class TcpClient : public Client
 {
 public:

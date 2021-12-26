@@ -2,6 +2,10 @@
 
 #include "client.h"
 
+/**
+ * @brief UDP-клиент
+ * 
+ */
 class UdpClient : public Client
 {
 public:

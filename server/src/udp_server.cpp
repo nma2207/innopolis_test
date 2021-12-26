@@ -4,12 +4,15 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include "unistd.h"
 
 #include <iostream>
+
 UdpServer::UdpServer()
 {
     std::cout << "Udp server is created" << std::endl;
     _listener = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    _clientLen = sizeof(_clientAddres);
 }
 
 /**
@@ -31,16 +34,12 @@ bool UdpServer::acceptClient()
 bool UdpServer::waitForMessage(std::string &message)
 {
     char buf[Server::BUFFER_SIZE];
-    //std::cout << _clientAddres.sin_addr.s_addr << std::endl;
-    recvfrom(_listener, buf, Server::BUFFER_SIZE, 0, (sockaddr*)&_clientAddres, &_clientLen);
-    //int bytes_read = recv(_clientSock, buf, Server::BUFFER_SIZE, 0);
-    //std::cout << _clientAddres.sin_addr.s_addr << std::endl;
+    ssize_t bytesRead = recvfrom(_listener, buf, Server::BUFFER_SIZE, 0, (sockaddr*)&this->_clientAddres, &this->_clientLen);
     message = buf;
-    return true;
+    return bytesRead != -1;
 }
 
 bool UdpServer::sendMessage(const std::string &message)
-{
-    //std::cout << _clientAddres.sin_addr.s_addr << std::endl;
+{  
     return sendto(_listener, message.c_str(), message.size() + 1, 0, (struct sockaddr*)&_clientAddres, _clientLen) != -1;
 }

@@ -18,7 +18,6 @@ bool UdpClient::connect()
 
 bool UdpClient::sendMessage(const std::string &message)
 {
-    std::cout << _serverAddr.sin_addr.s_addr << std::endl;
     return sendto(_socket, message.c_str(), message.size()+1, 0, (sockaddr*)&_serverAddr, sizeof(_serverAddr)) != -1;
 }
 

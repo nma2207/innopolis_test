@@ -61,7 +61,6 @@ std::pair<std::string, std::string> Client::send(const std::string &message)
         return {};
     }
     
-    std::cout << "wait for mess" << std::endl;
     std::string response;
     if (!waitForMessage(response, messageSize))
     {

@@ -30,3 +30,9 @@ regex
 vector
 -
 
+/home/marat/projects/test_task/server/test/main.cpp
+gtest/gtest.h
+-
+numbersprocessor.h
+/home/marat/projects/test_task/server/test/numbersprocessor.h
+
